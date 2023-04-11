@@ -1,0 +1,138 @@
+				
+				
+				SEQUENCIA LARAVEL COM RELACIONAMENTOS
+				
+				
+	0 - BAIXAR LARAVEL
+
+		* USANDO DOCKER: 
+			$ curl -s "https://laravel.build/LaraBlackDev01?with=mariadb" | bash
+			$ cd example-app
+			$ ./vendor/bin/sail up
+			$ config/app.php /*escolha as configurações*/
+			- muitos valores de configuração importantes são definidos usando o .env
+
+		* USANDO COMPOSER: 
+			$ composer create-project laravel/laravel example-app
+			$ cd example-app
+			$ php artisan serve
+			
+			ou composer global require laravel/installer
+ 
+			$ laravel new example-app
+
+			-Installing Sail Into Existing Applications
+			$ composer require laravel/sail --dev
+			$ php artisan sail:install
+			$ ./vendor/bin/sail up
+
+		* USANDO LARADOCK
+			$ git clone https://github.com/Laradock/laradock.git /*dentro do projeto laravel
+			$ cp .env.example .env
+			$ docker-compose up -d nginx mysql phpmyadmin redis workspace 
+			$ docker ps
+			$ docker-compose down
+			$ docker-compose stop {container-name}
+			$ docker-compose exec {container-name} bash
+			$ vim docker-compose.yml //Edit default Container config
+
+		* USANDO DEVILBOX
+			$ git clone https://github.com/cytopia/devilbox
+			$ cd devilbox
+			$ cp env-example .env
+			$ vim .env
+			$ docker-compose up
+			$ entre no usuario docker pelo $ sudo ./shell.sh
+			$ instale projeto dentro de /data/www/example-app/public ou htdocs, pelo usuario usando comando laravel new meu-app
+				
+	1 - CRIAR BANCO DE DADOS
+	
+	2 - ACESSAR .env e CONFIGURAR O BANCO COM LARAVEL
+	
+	3 - CRIAÇÃO MIGRATIONS - FACTORIES - SEEDS (DENTRO DE DATABASE).
+		*mudar AppServiceProvider.php
+			function boot 
+				Schema::defaultStringLength(191);
+		*composer dump-autoload (para projeto ficar ciente dos arquivos copiados para projeto, caso faça copia).
+		*php artisan migrate:fresh --seed
+
+	4 - CRIAÇÃO MODELOS (DENTRO DE APP).
+		*User, Address, ...
+	5 - CRIAÇÃO DOS RELACIONAMENTOS (nos modelos no APP)
+		*public function addressDelivery() //no modelo User.php
+			{									     fk   localkey
+				return $this->hasOne(Address::class, 'user', 'id')
+			}
+
+		*public funcion user() //dentro de Moldel Adrress.php
+		{											fk	 pk		
+			return $this->belongsTo(User::class, 'user', 'id');
+		}
+	6 - CRIAÇÃO DE ROTAS
+		*EM ROUTES WEB.PHP
+			Route::resources('users', 'UserController');
+			Route::resources('addresses', 'AddressController');
+
+	7 - CRIAÇÃO DO CONTROLLERS
+		*php artisan make:controller UserController -r
+		*php artisan make:controller AddressController -r
+
+		public function show($id) //UserController
+		{
+			$user = User::find($id); //referenciando modelo User.php
+
+			echo "<h1>Dados do usuário</h1><br>";
+			echo "Nome do usuário {user->name}<br>";
+			echo "email do usuário {user->email}<br>";
+
+			$userAddress = $user->addressDelivery()->get()->first()
+			if ($userAdress){
+				echo "<h1>Endereço de entrega</h1><br>";
+				echo "Endereço: {$userAddress->address}, {$userAddress->number}<br>";
+				echo "Complemento: {$userAddress->complement} CEP: {$userAddress->zipcode}<br>";
+				echo "Cidade/Estado: {$userAddress-city}/{$userAddress->state}<br>";
+			}
+		}
+
+		--------------------------------------------------------------------------------------------
+		public function show($id) //AddressController
+		{
+			$address = Address::find($id); //referenciando modelo Address.php
+
+			    echo "<h1>Endereço de entrega</h1><br>";
+				echo "Endereço: {$address->address}, {$address->number}<br>";
+				echo "Complemento: {$address->complement} CEP: {$address->zipcode}<br>";
+				echo "Cidade/Estado: {$address-city}/{$address->state}<br>";
+
+				$addressUser = $address->user()->get()->first()
+				if ($addressUser){
+					echo "<h1>Dados do usuário</h1><br>";
+					echo "Nome do usuário {addressUser->name}<br>";
+					echo "email do usuário {addressUser->email}<br>";
+				}
+		}
+
+		------------------------------------------------------------------------
+
+		<link rel="{{ asset('css/app.css')}}">
+		<script scr="{{ asset('js/app.js')}}"></script>
+
+		------------------------------------------------------------------------
+
+		troca asset pelo mix no blade que chama js, css ...
+		laravel mix
+		npm run dev ou
+		npm run production (mimificar arquivos)
+		<link rel="{{ mix('css/app.css')}}">
+		<script scr="{{ mix('js/app.js')}}"></script>
+
+		-------------------------------------------------------------------------
+
+		REQUEST ()
+		public function store (Request $request)
+		{
+			//promove a injeção de dependência com criação e uso de objetos
+		}
+		EX:
+
+		php artisan make:request Course

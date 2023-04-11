@@ -1,0 +1,109 @@
+projeto com LARADOCK
+https://www.youtube.com/watch?v=GienvDWdBmo carioca code
+https://www.youtube.com/watch?v=8tlkzlkjjLU marciel assiz
+
+
+1º criar projeto
+
+- composer create-project --prefer-dist laravel/laravel example-app
+ou
+- laravel new example-app	//*com composer global require laravel/installer
+ou
+- git clone https://github.com/laravel/laravel.git.io example-app
+ou
+- curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
+
+_____________________________________________________________________________
+ 
+2º baixar ou clonar docker dentro do projeto
+
+- git clone https://github.com/Laradock/laradock.git
+
+_____________________________________________________________________________
+
+3º modificar .env dentro da pasta laradock (entre na pasta laradock)
+
+- cp .env.example .env
+
+3.1º no arquivo .env
+
+- DATA_PATH_HOST=~/.laradock/data mude para DATA_PATH_HOST=/tmp
+- COMPOSE_PROJECT_NAME=example_app
+- Altere portas do NGINX: 80 e 443
+NGINX_HOST_HTTP_PORT=8089
+NGINX_HOST_HTTPS_PORT=543
+- Altere portas do mysql: 3306
+MYSQL_PORT=8306
+DB_HOST=mysql
+REDIS_HOST=redis
+QUEUE_HOST=beanstalkd
+- Altere portas do phpmyadmin: 8081
+PMA_PORT=8082
+- Altere portas do workspace: 2222
+WORKSPACE_SSH_PORT=9999
+----------------------------------
+
+
+___________________________________________________________________________
+
+4º rodar os containers
+
+$ sudo docker-compose up -d nginx mysql phpmyadmin 
+ou
+$ sudo docker-compose up -d nginx mysql phpmyadmin redis workspace
+
+*caso tenha erro verificar as PORTAS dos serviços dentro .env da pasta docker
+_____________________________________________________________________________
+
+5º http://localhost ir para abraço
+
+no phpmyadmin - localhost:8081
+
+server: mysql ou mariadb
+usuario: root
+senha:root
+
+- ao criar o banco e conectar, veja o arquivo do projeto example-app/config/database.php
+procure collation do mysql:
+'collation' => 'utf8mb4_unicode_ci'
+- procure .env do projet
+altere os dados como no item 3.1
+- crie o banco
+
+- no .env do projeto
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=larablack01
+DB_USERNAME=root
+DB_PASSWORD=root
+-----------------------------
+
+6º execute para entrar no modo workspace dentro da pasta laradock
+
+$ sudo docker-compose exec --user=laradock workspace bash
+
+depois 
+php artisan migrate
+
+
+_____________________________________________________________________________
+
+*CASO for entrar no SERVIÇO DO DOCKER, mysql, pgsql, workspace, php... com Docker Desktop (comando: docker ps, para ver id, precisa apenas dos 3 primeiros caracteres do id você consegue acessar).
+
+-docker exec -it id bash		//docker exec -it 39b bash
+ou
+-sudo docker-compose exec --user=laradock workspace
+
+*execute composer install para baixar as dependências se for baixar laravel do git
+*copie .env do docker para o projeto
+*execute generate key 
+-php artisan key:generate
+
+=============================================================================
+configurando Banco
+=============================================================================
+*ver a collection no arquivo /config/database.php
+-criar banco de dados
+no .env da aplicação conf banco
+-no workspace: php artisan migrate

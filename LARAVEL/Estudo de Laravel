@@ -1,0 +1,208 @@
+
+
+ESTUDO DE LARAVEL (php artisan = mostra os comandos do artisan)
+
+
+
+*sequencia de LOGIGA DE DESENVOLVIMENTO laravel
+
+***** ROUTE -> CONTROLLER -> MODELS -> VIEWS *****
+
+/ROUTES/WEB.PHP -> /APP/HTTP/CONTROLLERS/* -> /APP/* -> /RESOURCES/VIEWS/*
+
+-----------------------------------------------------------------------------
+ADICIONANDO SEGURANÇA NO LARAVEL
+O que são os Middlewares?  >  Grupos de Middlewares  >  Middlewares globais  >  Middleware de rotas  >  Setando o Middleware de rota.
+
+-----------------------------------------------------------------------------
+artisan: O Artisan é uma ferramenta de linha de comando (CLI) cujo objetivo é simplificar a realização de algumas tarefas comuns no Laravel, como criação de controllers, models, migrations, bem como execução do projeto (serve). 
+
+php artisan serve (inicia o servidor na aplicação)
+php artisan app:name NameSpace (muda namespace) da aplicação
+
+-----------------------------------------------------------------------------
+migrations: O conceito de migration, trazido pelo Laravel, permite o controle de versões e, assim, facilita a modificação e o compartilhamento da estrutura do banco de dados entre equipes.
+
+Agora, com o migration seu colega de trabalho verá nos registros de versionamento do código que teve uma atualização de arquivos na pasta “migration” e, então, basta ele rodar o comando php artisan migrate que seu banco estará totalmente atualizado.
+
+EX:
+php artisan make:migration create_product_line --create=product_line
+php artisan make:migration create_product --create=product
+
+UP
+Esta função é a responsável pela implementação das atualizações do banco, criar uma tabela, atualizar uma coluna etc.
+
+Down
+É a função que fará exatamente o inverso da função UP, revertendo seu banco de dados ao estado anterior a esta atualização.
+
+DICA: ao excluir aqruivos do migrations e afins faça o comando composer dump-autoload no terminal para que as referencias ao arquivo apagado sejam atualizadas.
+
+-----------------------------------------------------------------------------
+blade: O Blade é a linguagem utilizada pelo Laravel para construção de views. Ele contém as instruções começadas com um @ , por exemplo o @if , @section , @for , etc. O mesmo utiliza expressões do Laravel e do PHP para funcionar. Blade também tem variáveis, porém você não as declara diretamente nele.
+
+-----------------------------------------------------------------------------
+Models: dentro da arquitetura MVC, são classes responsáveis pela leitura, escrita e validação de qualquer dado.
+
+Eloquent no Laravel: O Eloquent nada mais é que um ORM (Object Relational Mapping) que vem em conjunto com o Laravel. Mas, melhor que isso, ele possui uma estrutura bem simples para você realizar a implementação da sua lógica de controle com banco de dados.
+
+php artisan make:model product_line
+php artisan make:model product
+
+DICA: criar pasta de models e separar por pastas para melhor organização.
+ex: php artisan make:model Models\\Balance -m (cria model, migrarions -m, com namespace com nome da classe)
+
+
+composer clearcache
+composer dump autoload
+composer create-project --prefer-dist laravel/laravel blog
+composer create-project --prefer-dist laravel/laravel blog "5.7"
+
+@Rubens23.
+
+
+==========================================================================================
+
+FAZENDO NOVA INSTALAÇÃO
+https://laravel.com/docs/9.x/installation#getting-started-on-linux
+___________________________________________________________________
+
+
+curl -s "https://laravel.build/example-app?with=mariadb,pgsql,redis&devcontainer" | bash
+
+Laravel needs almost no additional configuration out of the box. You are free to get started developing! However, you may wish to review the config/app.php
+
+cd example-app
+
+vim config>app.php
+ 
+./vendor/bin/sail up
+
+
+ESTUDO DE ROTAS COM LARAVEL
+
+Route::middleware(['throttle:global'])->group(function(){ //caso crie uma chamada no RouteServiceProvider com nome global
+    Route::get('/', [SiteController::class, 'home'])->name('site.home');
+    Route::get('/contato',[SiteController::class, 'contact'])->name('site.contact');
+    Route::get('/form',[SiteController::class,'submitForm'])->name('site.form');
+    Route::post('/usuario', [SiteController::class, 'store'])->name('user.store');
+ });
+
+ou usar com middleware alterado na pasta providers pelo usuario no final
+ Route::get('/',[SiteController::class, 'home'])
+ ->name('site.home');
+ ->middleware(['throttle:global'][]);
+ Route::get('/contato',[SiteController::class, 'contact'])->name('site.contact');
+->middleware(['throttle:global']);
+
+ Route::redirect('/teste','/',302);
+ Route::permanentRedirect('/teste301','/');
+
+ Route::get('/form',[SiteController::class,'submitForm'])->name('site.form');
+ Route::post('/usuario', [SiteController::class, 'store'])
+ ->name('user.store')
+ ->middleware(['throttle:5,1']); //sem precisar criar chamada no RouteServiceProvider, melhor né.
+
+ Route::get('/usuario/{id}',[SiteController::class,'submitEditForm'])->name('site.editform');
+ Route::match(['PUT', 'PATCH'],'/usuario/{user}', [SiteController::class, 'update'])
+     ->name('user.update');
+
+ Route::get('users/{id}/comments/{comment}', function (int $id) {
+         dd($id);
+     })->where(['id' => '[0-9]+', 'comment' => '']);
+
+ Route::get('users/{id}', function ($id) {
+     dd($id);
+ });
+
+ Route::get('users/{id}', function ($id) {
+         dd($id);
+ })->whereNumber(['id', 'comment'])->whereAlphaNumeric(['id', 'comments'])->whereUuid('id');
+
+ Route::get('users/{id}/comments/{comment}', [SiteController::class, 'userComments']);
+
+ Route::get('/cursos/{course?}', function($course = 'all'){
+     if ($course ==='all') {
+
+         echo "Lista todos os cursos";
+
+         return; //Técnica chamada early return/don't use else keyword do object calisthenics.
+         //colocar return para parar o código e evitar a
+         //execução de mais codigos apesar da condição.
+     }
+
+     echo "Lista o curso {$course}!";
+ });
+
+ Route::get('/usuario/{user}', [SiteController::class, 'show']);
+ Route::get('/teste', SingleController::class);
+
+//php artisan rout:list --except-vendor para listar as rotas do laravel
+ Route::controller(UserController::class)->group(function(){
+     Route::get('/usuario/{user}', 'show')->name('user.show');
+     Route::post('/usuario','store')->name('user.store');
+     Route::match(['PUT','PATCH'],'/usuario/{user}/update','update')->name('user.update');
+ });
+
+ //quando usa o controller ja ligado com o model, resume as rotas de CRUD;
+ Route::resource('/artigos', PostController::class)
+ ->only([
+     'create','store','edit'
+ ])
+ ->except([
+     'index'
+ ])
+ ->names([
+
+     'index' => 'posts.index',
+     'store' => 'posts.store',
+ ])
+ ->Parameters([
+
+     'artigos' => 'post'
+ ]);
+
+ para rotas em aplicações externas
+ Route::domain('{account}.seudominio.com')->group(function(){
+     Route::get('/usuario/{user}', function($account, $user){
+         dump($account, $user);
+     })->name('user.show');
+ });
+
+//para rotas com segurança com middleware
+ Route::get('/login', function(){
+     echo "Faça seu Login";
+ })->name('login');
+
+ Route::middleware(['auth'])->group(function(){
+     Route::get('/usuario/{user}', [SiteController::class, 'show']);
+ });
+
+//agrupamentos de rotas onde oculta os prefixos de rotas "caminhos completos"
+ Route::prefix('admin')->group(function(){
+     Route::get('admin/usuario/{user}', [SiteController::class, 'show']);
+ });
+
+//agrupamentos de rotas onde oculta os prefixos de rotas "caminhos completos";
+//neste caso as rotas estão mais padronizadas com comando route:list
+ Route::name('admin.')->group(function(){
+     Route::get('admin/usuario/{user}', [SiteController::class, 'show'])->name('user.show');
+ });
+
+//agrupamentos de rotas e autenticação *poluido
+ Route::middleware(['auth'])->group(function(){
+     Route::prefix('admin')->group(function(){
+         Route::name('admin.')->group(function(){
+            Route::get('admin/usuario/{user}', [SiteController::class, 'show'])->name('user.show');
+        });
+     });
+ });
+
+//agrupamentos de rotas e autenticação *limpo
+ Route::group(['middleware' => ['auth'],'prefix' => 'admin', 'as' =>'admin.'], function(){
+     Route::get('usuario/{user}',[SiteController::class, 'show'])->name('user.show');
+ });
+
+// *Rotas de pastas substituídas no /Providers/RouteServiceProvider.php
+ require('site/routes.php');
+ require('arena/routes.php');
+ require('admin/routes.php');

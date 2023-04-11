@@ -1,0 +1,163 @@
+INFRA DE DOCKER
+
+📎 𝗙𝗼𝗻𝘁𝗲𝘀 𝗲 𝗟𝗶𝗻𝗸𝘀:
+‣ Documentação sobre Docker: https://docs.docker.com/get-started/overview/
+‣ Essa é a página geral da documentação: https://docs.docker.com/
+‣ https://www.youtube.com/watch?v=ntbpIfS44Gw
+‣ https://www.youtube.com/watch?v=RE31GWJGkwA
+
+para instalação do docker
+
+~$ sudo apt install docker.io docker-compose
+ou
+vá no documento oficial do docker: https://docs.docker.com/ sempre a melhor escolha por está atualizado
+
+______________________________________________________________________________________
+
+para iniciar junto com sistema e habilitar para o uso
+
+~$ sudo systemctl enable --now docker docker.socket containerd
+
+______________________________________________________________________________________
+
+para ver menu de ajuda e comandos
+
+docker --help
+
+______________________________________________________________________________________
+
+DOCKER HUB - Repositório comunitário com imagens de aplicações e sistemas operacionais
+rodando em containers.
+
+______________________________________________________________________________________
+
+COLOCANDO USUÁRIO no grupo do Docker
+*caso digite o comendo $ docker images e resultador for a informaçãoda não permissão do usuário, faça o seguinte comando
+
+$ cat /etc/group        //verás grupos e usuários linux, inclusive o grupo docker
+$ sudo usermod -a -G docker user        //usuário francisco por exemplo
+
+______________________________________________________________________________________
+
+CRIANDO AMBIENTE de desenvolvimento com wordpress: essa imagem será usada para todos servidores wordpress
+
+$ sudo su 
+# docker pull wordpress  //baixar a imagem
+# docker images  //visualizar imagens baixadas, pode usar grep "docker images | grep nome_qualquer"
+# docker run --name meu_wordpress -p 8080:80 -d wordpress    //criando container baseado na imagem e porta, servindo para acessar o "app", "-d é para roda em segundo plano"
+# docker run --name get-started --rm -p 9090:8080 tutorialcronapp/get_started:v0.01
+# docker run --name <nome-container> --rm -p <porta>:8080
+# docker run -it ubuntu                                     //criando container baseado na imagem e porta, servindo para acessar o "servidor"
+# docker ps                                                 //lista os container rodando com seu id
+# docker exec id ls /                                       //executa dentro do container específco no caso lista as pastas ex: "docker exec 9ef7ec237f4b ls /"
+# docker exec -it id bash                                   //executa basch dentro do container no meu terminal
+# sail up -d    //para levantar container em serviço, o -d trabalha em modo invisivel
+# sail down     //parar e limpar quando se usa o sail up -d
+
+para limpar imagens do docker
+# docker system prune -a
+--------------------------------------------------------------------------
+*obs para usar artisan no docker, em vez de usa "php artisan make:model Product" por exemplo
+usa-se sail
+# sail artisan make model Product
+# sail composer require pacote | auto-load | ...
+# sail yarn | npm | ... // sail yarn add ... | sail shell | sail root-shell| sail yarn install *para baixar as dependencias ja que não se envia para o git (grande).
+# sail thinker |mesmo: php artisan thinker
+
+e para publicar as modificações do sail
+sail artisan sail:publish
+
+sail build --no-chache  //para construir o app nas versões atualizadas e depois sail up -d
+
+sail share  //para usar na rede local para visualizar o projeto
+______________________________________________________
+*reiniciando um projeto aula 4.8 black dev
+-clone repositorio
+-abra documentação  //*quando se tem composer apenas no container (https://laravel.com/docs/9.x/sail)
+-va em Installing Composer Dependencies For Existing Applications (https://laravel.com/docs/9.x/sail#executing-composer-commands).
+copie:
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \ //atenção! a versão de imagem é enxuta e serve para baixar dependências.
+    composer install --ignore-platform-reqs
+
+-verifique o .env e gere a chave sail artisan key:generate
+-sail up -d 
+
+
+_____________
+    <nome-container>: defina um nome para o contêiner Docker.
+    <porta>:8080: porta local para executar o projeto e a porta onde o Docker está rodando, o padrão é "8080". Garanta que não exista outro serviço sendo executado na primeira porta.
+    No código exemplo abaixo, escolhemos a porta "9090" para o projeto e deixamos a porta padrão "8080" para o Docker.
+    informe a sua conta DockerHub, ou outro registry Docker, informado no comando anterior.
+    informe o repositório da sua conta DockerHub, ou outro registry Docker,informado no comando anterior.
+    informe a versão da imagem usado no comando anterior.
+_____________
+______________________________________________________________________________________
+
+RODANDO uma aplicação em um container precisamos crisar arquivo docker file ;-)
+
+* Para isso veja no documento do endereço: https://docs.docker.com/engine/reference/builder/, onde encontrará conteúdo necessário,
+siga a seguinte logica de tarefas
+
+1 º Criar a image na qual tenha o servidor (por exemplo usando pyton, laravel, jango, spring...)
+    -procure em dockerhub python clique e veja uma tag referente a versão e S.O certo para a aplicação. Faça como na parte CRIANDO AMBIENTE.
+
+2 º Criar arquivo Dockerfile na pasta da aplicação e nele siga a sequência de comandos. 
+(instalar dependências > copiar arquivo principal > expor porta 5000 > rodar aplicação)
+sequência....
+
+FROM python:3.8.12-bullseye         //este comando indica a imagen e versão
+
+WORKDIR /app                        //dentro da imagem o workdir vai mudar para essa pasta na imagem, se não existe ele vai criar e transformara no diretório atual representado no linux pelo ponto(.)
+   
+*no term crie arquivo requirements.txt e preencha com resultado do comando $ pip freeze ou $ pip freeze > requirements.txt
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt //apontando arquivo para instalação das bibliotecas
+
+EXPOSE 5000                         //faz a aplicação roda na porta 5000 que é bom até para os desenvolvedores do sistema
+
+ENV FLASK_ENV development           //cria variavel de ambiente
+
+COPY app.py .                       //copia o app.py para diretório atual usando o ponto
+
+CMD ["flask", "run", "--host", "0.0.0.0"]    //executa o comando para rodar no IP da interface da aplicação, para conseguir receber as requisições.
+
+*prontinho, depois de criado o arquivo vamos criar a nossa imagem
+
+$ docker buid -t flask-app:dev-0.0.1 .      //com isso vai executar em uma determinada versão criada para fazer a orientação da equipe e apontando o diretório atual com o (.), caso use outro diretório use o -f e caminho em vez de usar o ponto.
+______________________________________________________________________________________
+
+REMOVENDO CONTAINERS
+
+1º precisamos listá-los e verificar seu estado ou status UP "rodando" ou EXITED (0) "existem mas estão parados".
+2º precisamos PARAR serviço com comando
+# docker stop 645b7a26db6f  //no qual o ID ou NOME será usado isso. lembrando que ainda existe start, restart e status
+3º vamos então para a remoção do container com comando
+# docker rm 645b7a26db6f    //no qual o ID ou NOME será usado isso.
+# docker rmi ubunto         //para remover a imagem
+
+______________________________________________________________________________________
+
+ESTUDO FUTURO DE DOCKER PARA ESPECIALIZAR
+
+-> Overlay File System
+______________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+

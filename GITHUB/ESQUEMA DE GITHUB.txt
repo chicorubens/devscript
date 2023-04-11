@@ -1,0 +1,164 @@
+ESQUEMA DE GITHUB 
+
+https://githowto.com/
+
+
+1 CRIE O USUARIO GITHUB
+
+2 INSTALE O GIT NA MÁQUINA
+
+=========================================
+PARA ENVIAR E BAIXAR DO GIT AO GITHUB
+=========================================
+
+3.1 ADICIONE A PASTA DO PROJETO AO GIT COMO REPOSITÓRIO VAZIO
+	
+	Na pasta do projeto.
+	$git init 
+
+	*É boa prática do Git logar antes.
+
+	$git config --global user.name "chicorubens"
+
+	*ou sem --global caso seja temporario.
+
+	$git config --global user.email "fcorubens@gmail.com"
+
+	$git config --global core.editor sub //para sublime
+	$git config --global core.editor "atom --wait"
+
+	//para consultar as config global
+	$git config user.name / user.email / core.editor / --list
+	$git config --list 
+
+
+3.2 VÁ A PAGINA DO GITHUB E COPIE O ENDEREÇO DO REPOSITÓRIO REMOTO
+	*É boa prática do Github criar o readme.
+	*É boa prática do Github criar o site referente ao projeto, github pages.
+	*É boa prática do Github criar o site usuário.io.
+
+3.3 ADICIONE O ENDEREÇO DE ORIGEM DO REPOSITÓRIO GITHUB NO GIT DA MÁQUINA
+	$git remote add origin http://github.com/usuario/nomedoREPOSITÓRIO
+
+3.4 ADICIONE OS ARQUIVOS AO STATE DO GIT
+	$git add nomedoarquivo
+ou
+	$git add . 		"para adicionar tudo"
+	$git add -A
+	$git add --all
+
+3.5 CONFIRME A INCLUSÃO COM O "STATUS", "LOG", "BRANCH" E "DIFF"
+	$git status
+	$git log
+	$git branch
+	$git diff
+	$git diff --name-only
+
+3.6 COMITAR OU (APLICAR MUDANÇAS) AS MUDANÇAS DO GIT
+	$git commit -m "texto da alterção"
+	*Esse comando aplica ao branch master
+	$git commit -am "texto da alterção" 
+	*adiciona (add) e manda o commit.
+
+3.7 ENVIAR OS ARQUIVOS AO GITHUB (USUARIO E SENHA DO GITHUB)
+	$git push origin master
+
+	*o Branch master é o padrão.
+	*O GITHUB vai pedir para fazer login.
+
+3.8 PARA BAIXAR OS ARQUIVOS DO REPOSITÓRIO
+	$git pull origin master
+
+3.9 TRATAR CONFLITOS
+	*Ao tentar enviar com "push" o git vai dar um "reject" indicando um conflito,
+	ao mesmo tempo sugerirá fazer um "pull", o GIT fará um "mergin" no seu arquivo local, apague o codigo não desejado e renvie com "push".
+
+=========================================
+PARA CLONAR DO GITHUB AO GIT LOCAL
+=========================================
+
+4.1 ABRA NO GITHUB O REPOSITÓRIO DESEJADO E CLONE-O PARA O GIT LOCAL
+	$git clone http://github.com/usuario/nomedoREPOSITÓRIO ou
+	$git clone http://github.com/usuario/nomedoREPOSITÓRIO nomenovodapasta
+
+4.2 PARA VER SERVIDOR REMOTO
+	$git remote -v
+
+============================================
+PARA VOLTAR AS CONFIRMAÇÕES DO GIT (UNSTAGE)
+============================================
+
+5.1 PARA RESTAURAR O STAGE ERRADO
+$git restore --staged <file> 
+
+5.2 PARA REMOVER ARQUIVOS DO STAGE, USE RESET HEAD, EM QUE HEAD É O ÚLTIMO COMMIT DA RAMIFICAÇÃO ATUAL. ISSO LIMPA O STAGE.
+$git reset HEAD <file>
+$git reset --soft 4f2c5069f891d001af97ab7210c2799854baab13
+*pegue a ultima chave desejada que será o último ponto de envio de commit
+
+5.3 PARA REVERTER O ARQUIVO DE VOLTA AO STAGE EM QUE ESTAVA ANTES DAS ALTERAÇÕES QUE PODEMOS USAR:
+$git checkout HEAD -- <file>
+
+5.4 PARA REMOVER UM ARQUIVO DO DISCO E REPOSITÓRIO, USE GIT rm E PARA REMOVER UM DIRETÓRIO, USE O SINALIZADOR -r:
+$git rm '*.txt'
+$git rm -r <dirname>
+
+5.5 SE QUEREMOS REMOVER UM ARQUIVO DO REPOSITÓRIO, MAS MANTÊ-LO EM DISCO, DIGAMOS QUE ESQUECEMOS DE ADICIONÁ-LO AO NOSSO ARQUIVO .GITIGNORE E USE --CACHE:
+$git rm <filename> --cache
+$git rm --cached <filename>
+$git rm -f '*.txt'
+
+5.6 PARA REVERTER UM COMMIT, USE REVERT, ONDE VAI VOLTAR O COMMIT E SEM APAGAR O COMMIT ANTERIOR.
+$git revert --no-edit 4f2c5069f891d001af97ab7210c2799854baab13
+
+=========================================
+PARA MANIPULAR BRANCH
+=========================================
+*$git branch //para mostrara os branch
+
+6.1 CRIAR BRANCH
+$git branch <nomebranch>
+
+6.2 MUDAR DE BRANCH
+$git checkout <nomebranch>
+
+6.3 REMOVER BRANCH LOCALMENTE:
+
+$git branch -D <nome do branch>
+
+6.4 REMOVER BRANCH REMOTAMENTE:
+
+$git push <nome do origin> <nome do branch> --delete
+$git push origin :nome_do_branch
+$git branch -dr origin/nome-do-branch
+
+Atentando para os : na frente do nome do branch, pois ele quem fará que o branch seja deletado, caso contrário você estaria atualizando o branch remoto.
+
+6.5 IGNORAR OS ARQUIVOS NO BRANCH
+
+Crie um arquivo oculto com o nome de .gitignore e escreva os nome dos arquivos.
+*O uso de * para generalizar tipos de arquivo como *.txt ou *.bkp
+
+*qualquer_pasta/ ignora as pastas.
+*qualquer_past/*.txt arquivos .txt da pasta
+
+============================================
+PARA CRIAR PAGINA DE USUÁRIO NO GITHUB
+E NO GITHUB PAGES PARA CRIAÇÃO DE MANUAIS,
+ DOCUMENTAÇÃO, APRESENTAÇÃO DO PROJETO, ...
+============================================
+
+7.1 CRIANDO REPOSITÓRIO
+	campo de texto coloque o nomedorepositório.
+	Se ao colocar nome do REPOSITÓRIO coloque o nome do
+	usuario.github.io para identificar página princial do usuário.
+	
+	-descrição "Meu sitio pessoal" por exemplo.
+	-Public ou private: para mostrar ou não o REPOSITÓRIO. 
+	-Add gitignore: se optar por não mostrar alguns arquivos do projeto.
+	-Add license: do projeto do repositório.
+
+=========================================
+FIM
+=========================================
+

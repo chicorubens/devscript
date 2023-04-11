@@ -1,0 +1,18 @@
+Generating public/private rsa key pair.
+Your identification has been saved in id_github
+Your public key has been saved in id_github.pub
+The key fingerprint is:
+SHA256:nj0HJBrdasujvLlr4QIFqtHI8c7d8Jz1lg0tsxdlDMo fcorubens@gmail.com
+The key's randomart image is:
++---[RSA 4096]----+
+|             .o  |
+| ..    . .. .  + |
+|.+o.  . o oE. o  |
+|+..... o = + o   |
+|..o.. * S o B .  |
+|. .o ..O + * o   |
+|   . . .* + o    |
+|    ..oo . o     |
+|     oB+         |
++----[SHA256]-----+
+

@@ -1,0 +1,16 @@
+///////////////////////criar usuario mariadb/////////////////////////////////
+
+CREATE USER 'francisco'@'localhost' IDENTIFIED BY 'rubens23';
+
+Infelizmente, nesse momento o novousuario não tem permissão para fazer nada com as bases de dados. Na verdade, se o novousuario tentar fazer login (com a senha password), ele não será capaz de chegar ao shell do MySQL.
+
+Portanto, a primeira coisa a fazer é fornecer ao usuário o acesso às informações que ele vai precisar.
+
+GRANT ALL PRIVILEGES ON * . * TO 'francisco'@'localhost';
+Os asteriscos neste comando referem-se ao banco de dados e à tabela (respectivamente) que eles podem acessar - este comando específico permite ao usuário ler, editar, executar e realizar todas as tarefas em todas as bases de dados e tabelas.
+
+Uma vez finalizadas as permissões que você quer definir para os seus novos usuários, certifique-se sempre de recarregar todos os privilégios.
+
+FLUSH PRIVILEGES;
+
+https://www.digitalocean.com/community/tutorials/como-criar-um-novo-usuario-e-conceder-permissoes-no-mysql-pt

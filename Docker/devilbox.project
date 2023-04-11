@@ -1,0 +1,102 @@
+*https://www.youtube.com/watch?v=QPzpiEDyDPo instalação wordpress
+*https://devilbox.readthedocs.io/en/latest/examples/setup-laravel.html#install-laravel
+*https://devilbox-readthedocs-io.translate.goog/en/latest/examples/setup-laravel.html?_x_tr_sl=auto&_x_tr_tl=pt&_x_tr_hl=pt-BR#enter-the-php-container
+*https://www.youtube.com/@alpondith     INICIANDO LARAVEL no devilbox
+
+
+Etapas de configuração projeto client (lembrando que é possível executar varios projetos)
+___________________________________________________________________________
+*atenção com as portas quando usar varios projetos (variaveis do docker-compose.yml e copiar para .env)
+
+
+1º 
+# Pegue a caixa do diabo
+$ git clone https://github.com/cytopia/devilbox
+
+2º 
+# Criar arquivo de ambiente docker-compose
+$cd devilbox
+$ cp env-example .env
+
+3º
+# Edite sua configuração (*versões, portas, modulos, hosts, etc. Inclusive o local dos projetos: HOST_PATH_HTTPD_DATADIR=./data/www)
+$ vim .env
+
+4º
+# Iniciar todos os contêineres
+$ docker-compose up
+e
+# Stop MySQL from the current stack
+$ docker-compose stop mysql
+
+*obs abrir localhost e verificar os endereços de host do projeto
+
+5º
+para Laravel precisa colocar a instalação dentro da pasta ./data/www da instalação do devilbox, outras opções é colocar dentro de ./data/www/meu-app/public ou ./data/www/meu-app/htdocs 
+
+ou
+
+executar sudo ./shell.sh para iniciar o usuario do docker.
+depois de abrir usuario
+
+baixar o projetos laravel (laravel new meu-app_exemplo).
+
+6º
+edit /etc/hosts (acrescente 127.0.0.1 app.local), no windows caminho windows\system32\drivers\etc\hosts
+cp cfg/php8.1/devilbox-php.ini-xdebug xdebug.ini para habilitar xdebug
+
+*acrescente no arquivo xdebug.ini
+antes de [PHP] 
+;
+; PHP.ini configuration
+;
+html_errors = 1 //acrescente esse comandando para pleno funcinamento do xdebug. no arquivo da versão do Php do devilbox devilbox/cfg/php-ini-8.1 por exemplo.
+[PHP]
+xdebug.mode               = debug,develop
+
+7º
+$composer init      //iniciando projeto no composer
+
+-executa shell.sh na raiz do devilbox para entrar usuario do projeto
+-para inicializar um projeto depois de executar shell.sh, digite $composer init dentro da pasta data\www\meu-app\public\ 
+
+saida:
+Welcome to the Composer config generator  
+                                            
+
+
+This command will guide you through creating your composer.json config.
+
+Package name (<vendor>/<name>) [root/httpd]: chicorubens/projeto
+Description []: testando
+Author [n to skip]: Francisco Rubens <fcorubens@gmail.com>
+Minimum Stability []: dev
+Package Type (e.g. library, project, metapackage, composer-plugin) []: project
+License []: MIT
+
+Define your dependencies.
+
+Would you like to define your dependencies (require) interactively [yes]? 
+Search for a package: 
+Would you like to define your dev dependencies (require-dev) interactively [yes]? 
+Search for a package: 
+Add PSR-4 autoload mapping? Maps namespace "usuario\projeto-app" to the entered relative path. [src/, n to skip]:  
+
+    "name": "rubensweb/client",
+    "description": "testando",
+    "type": "project",
+    "license": "MIT",
+    "autoload": vendor/autoload.php
+    "authors":"name": "Francisco Rubens","email": "fcorubens@gmail.com"
+    "minimum-stability": "dev",
+    "require": {}
+
+8º
+colocar autoload no app
+require __DIR__. '/vendor/autoload.php';
+depois: $composer dump-autoload
+
+
+
+
+

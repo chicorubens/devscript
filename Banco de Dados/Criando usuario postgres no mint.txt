@@ -1,0 +1,31 @@
+ALTERANDO SENHA INICIAL DO POSTGRESQL [UBUNTU]
+
+
+
+Ao realizar a instalação do PostgreSQL me deparei com a seguinte questão: para me conectar ao banco era necessário utilizar uma senha, mas que senha é essa? Fiz algumas buscas e descobri que é necessário alterar esta senha após a instalação. Os comandos são bem simples.
+
+Primeiramente vamos alterar a senha do usuário postgres:
+
+ sudo passwd postgres
+
+Após executar o comando aparecerão as seguintes mensagens:
+Digite a nova senha UNIX: 
+Redigite a nova senha UNIX: 
+
+Digite a sua senha e redigite a mesma em seguida. Feito isso, iremos logar com o usuário postgres.
+
+ su postgres
+
+A senha que será exigida é a mesma que acabamos de alterar.
+
+Agora vamos alterar a senha para conectar ao banco.
+
+Este comando é para a versão 7 ou superior:
+
+ psql -c "ALTER USER postgres WITH PASSWORD 'nova_senha'" -d template1
+
+Onde nova_senha será a senha que você deseja.
+
+Pronto, agora você pode realizar a conexão no seu banco de dados perfeitamente.
+
+https://www.vivaolinux.com.br/dica/Alterando-senha-inicial-do-PostgreSQL-[Ubuntu]

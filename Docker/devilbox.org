@@ -1,0 +1,75 @@
+http://devilbox.org/
+
+	Ambiente de desenvolvimento reproduzível e idêntico para todos os sistemas operacionais host com zero requisitos de configuração.
+
+	Pilha de desenvolvimento Docker LAMP com suporte https válido.
+
+O Devilbox é uma pilha PHP dockerizada moderna e altamente personalizável, com suporte completo para LAMP e MEAN e rodando em todas as principais plataformas. O objetivo principal é alternar e combinar facilmente qualquer versão necessária para o desenvolvimento local.
+
+Ele suporta um número ilimitado de projetos para os quais vhosts , certificados SSL e registros DNS são criados automaticamente. E-mail catch-all e ferramentas de desenvolvimento populares também estarão ao seu serviço. A configuração não é necessária, pois tudo já está pré-configurado.
+
+como usar:
+
+1º) baixar
+# Get the Devilbox
+$ git clone https://github.com/cytopia/devilbox
+
+2º) criar .env 
+# Create docker-compose environment file
+$ cd devilbox
+$ cp env-example .env
+
+3º) Editar .env
+# Edit your configuration
+$ vim .env
+
+4º) Subir o APP
+# Start all container
+$ docker-compose up
+
+5º) caso queira subir apenas o que precisa basta usar:
+# Load traditional lamp stack only
+$ docker-compose up httpd php mysql
+
+# Add redis to the running stack
+$ docker-compose up redis
+
+# Stop MySQL from the current stack
+$ docker-compose stop mysql
+
+6º) Estruturas suportadas
+Estruturas e CMS suportados
+
+Não há nada de especial sobre o devilbox, portanto, qualquer estrutura ou CMS que funcione com pilhas LAMP/MEAN normais também funcionará aqui. No entanto, para garantir o dobro, alguns aplicativos populares foram explicitamente testados.
+-Cake PHP								-PhotonCMS
+-CodeIgniter							-PrestaShop
+-Craftcms								-Shopware
+-Drupalname								-SymfonyGenericName
+-JoolaGenericName						-Typo3
+-Laravel								-Wordpress
+-Magento								-EstaFramework
+-PhalconPHPGenericName					-ZendName
+
+Devilbox Intranet
+
+Depois que o devilbox estiver funcionando, você poderá visitar a intranet incluída em http://localhost .
+A intranet não é apenas um simples traço, ela fornece muitas ferramentas úteis:
+Saúde do contêiner | Estado do DNS | vHosts disponíveis | E-mails | Bancos de dados | Configuração efetiva.
+
+__________________________________________________________________________________________________________
+
+na pasta devilbox
+edit arquivo .env
+
+*host, intranet :), versões das imagens (php, mysql, etc)
+
+backup, ssh, email, httpd_dochoot_dir=public ou ., 
+
+no diretório ~/devilbox/data/www/projeto/public -> coloque a pasta do seu projeto
+
+ou 
+
+pode por wordpress por exemplo ou projeto/public/index..   */no navegador será locahost/projeto.loc ou local
+
+*acesse no windows c:\windows\system32\drivers\etc\hosts
+127.0.0.1 projeto.loc 		*/adicione essa linha
